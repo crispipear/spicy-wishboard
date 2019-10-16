@@ -2,11 +2,12 @@
   "name": "spicy-wishboard",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
     "build": "cd client && yarn build",
-    "start": "node index.js"
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,12 @@
   },
   "homepage": "https://github.com/crispipear/spicy-wishboard#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.6.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }

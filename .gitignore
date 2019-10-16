@@ -8,10 +8,9 @@
 # testing
 /coverage
 
-# production
-/build
-
 # misc
+.env
+accountKey.json
 .DS_Store
 .env.local
 .env.development.local
