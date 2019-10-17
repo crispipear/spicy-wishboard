@@ -4,10 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "init": "npm install && cd client && npm install && cd ..",
     "start": "node app.js",
     "build": "cd client && yarn build",
-    "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "gcloud app deploy",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
