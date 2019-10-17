@@ -1,19 +1,25 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const app = express();
+var express         = require('express'),
+    bodyParser      = require('body-parser'),
+    cors            = require('cors'),
+    path            = require('path'),
+    userFuncs       = require('./backend/user')
 
-var userFuncs = require('./backend/user');
+const app = express();
 
 // Serve the static files from the React app
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-// An api endpoint that returns a short list of items
-app.get('/user', (req,res) => {
-    res.send("hello")
-    userFuncs.cretateUser({email: 'crispipear@gmail.com', password: 'testing123'})
-});
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+var urlencodedParser = bodyParser.urlencoded({extended: false});
+
+app.post('/create-account', urlencodedParser, (req, res) => {
+    userFuncs.cretateUser(req.body)
+        .then(res => res.status(200).json({'message': res}))
+        .catch(err => res.status(400).json({'message':"bad request" + err}))
+    
+})
 
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
@@ -22,7 +28,7 @@ app.get('*', (req,res) =>{
 
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port);
 
 console.log('App is listening on port ' + port);

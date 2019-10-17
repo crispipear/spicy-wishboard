@@ -2,20 +2,24 @@ const firebase = require('./firebase')
 const uuidv4 = require('uuid/v4');
 
 function cretateUser(user){
-    let uid = uuidv4();
-    firebase.auth.createUser({
-        uid: uid,
-        email: 'user@example.com',
-        displayName: 'minzli',
-        password: 'pw123456'
-      })
-        .then(function(userRecord) {
-          // See the UserRecord reference doc for the contents of userRecord.
-          console.log('Successfully created new user:', userRecord.uid);
+    return new Promise((resolve, reject) => {
+      let uid = uuidv4();
+      firebase.auth.createUser({
+          uid,
+          email: user.email,
+          displayName: user.username,
+          password: user.password
         })
-        .catch(function(error) {
-          console.log('Error creating new user:', error);
+        .then(userRecord => {
+          resolve('account created')
+          // res.status(200).send('user account created')
+        })
+        .catch(err => {
+          reject(err)
+          // res.status(400).send({status: 400, message: 'failed to create account: ' + err})
         });
+    })
+
 }
 
 module.exports = {
