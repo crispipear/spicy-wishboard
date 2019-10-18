@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-class Welcome extends Component {
+class Home extends Component {
     state = {}
     render() {
         return (
@@ -19,4 +19,4 @@ function mapDispatchToProps(dispatch) {
 const mapStateToProps = state => ({
     siteTitle: state.main.siteTitle
 })
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

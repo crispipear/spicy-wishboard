@@ -2,7 +2,7 @@ var express         = require('express'),
     bodyParser      = require('body-parser'),
     cors            = require('cors'),
     path            = require('path'),
-    userFuncs       = require('./backend/user')
+    user            = require('./backend/user')
 
 const app = express();
 
@@ -12,20 +12,21 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-var urlencodedParser = bodyParser.urlencoded({extended: false});
+app.use(bodyParser.text());
 
-app.post('/create-account', urlencodedParser, (req, res) => {
-    userFuncs.cretateUser(req.body)
-        .then(res => res.status(200).json({'message': res}))
-        .catch(err => res.status(400).json({'message':"bad request" + err}))
-    
-})
+//routes
+app.use('/user', user)
 
-// Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
+// Catch 404
+app.use((req, res, next) => {
+    let err = new Error('Route Not Found')
+    err.status = 404
+    next(err)
+})
 
 
 const port = process.env.PORT || 3001;

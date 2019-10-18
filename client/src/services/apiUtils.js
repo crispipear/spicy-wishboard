@@ -5,14 +5,12 @@ const headers = {
 }
 
 function post(url, data){
-    axios.post(url, data, {headers})
-    .then(res => console.log(res))
-    .catch(err => {
-        console.log('failed to post: ' + err)
-    })
+    return axios.post(url, data, {headers})
+    .then(res => res)
+    .catch(err => err)
 }
 
-const API_URL = endPoint => `http://localhost:3001/${endPoint}`
+const API_URL = endPoint => `http://localhost:3001${endPoint}`
 
 export {
     post,

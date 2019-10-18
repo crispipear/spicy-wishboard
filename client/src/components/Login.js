@@ -24,7 +24,15 @@ class Login extends Component {
             password: this.state.password,
             email: this.state.email
         }
-        post(API_URL('create-account'), data)
+        post(API_URL('/user/create'), data)
+            .then(res => {
+                if(res.status == 200){
+                    window.alert('account created!')
+                }
+            })
+            .catch(err => {
+
+            })
     }
 
     render() {

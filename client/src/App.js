@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-import Welcome from './components/Welcome';
+import Home from './components/Home';
 import Login from './components/Login';
 
 import './styles/app.scss';
@@ -11,7 +11,7 @@ import './styles/app.scss';
 const routes = [
   {
     path: "/",
-    main: Welcome
+    main: Home
   },
   {
     path: "/login",

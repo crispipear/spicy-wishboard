@@ -1,27 +1,30 @@
-const firebase = require('./firebase')
-const uuidv4 = require('uuid/v4');
+var   express = require('express'),
+      router = express.Router(),
+      firebase = require('./firebase'),
+      uuidv4 = require('uuid/v4');
 
-function cretateUser(user){
-    return new Promise((resolve, reject) => {
-      let uid = uuidv4();
-      firebase.auth.createUser({
-          uid,
-          email: user.email,
-          displayName: user.username,
-          password: user.password
-        })
-        .then(userRecord => {
-          resolve('account created')
-          // res.status(200).send('user account created')
-        })
-        .catch(err => {
-          reject(err)
-          // res.status(400).send({status: 400, message: 'failed to create account: ' + err})
-        });
-    })
+const TAG = 'USER_ROUTE'
 
-}
+router.all('*', (req, res, next) => {
+  req.TAG = `${TAG}, ${req.path}`;
+  next();
+})
 
-module.exports = {
-    cretateUser
-}
+router.post('/create', (req, res) => {
+  const user = req.body
+  let uid = uuidv4();
+  firebase.auth.createUser({
+      uid,
+      email: user.email,
+      displayName: user.username,
+      password: user.password
+  }).then(userRecord => {
+    res.status(200).json({'message': 'create account successful'})
+    console.log('created account: ' + uid)
+  }).catch(err => {
+    res.status(400).json({'message': 'failed to create account: ' + err})
+    console.log('create account error: ' + err)
+  })
+})
+
+module.exports = router
