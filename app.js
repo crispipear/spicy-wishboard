@@ -2,7 +2,7 @@ var express         = require('express'),
     bodyParser      = require('body-parser'),
     cors            = require('cors'),
     path            = require('path'),
-    user            = require('./backend/user')
+    user            = require('./server/user')
 
 const app = express();
 

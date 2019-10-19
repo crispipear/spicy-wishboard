@@ -6,9 +6,9 @@
   "scripts": {
     "init": "npm install && cd client && npm install && cd ..",
     "start": "node app.js",
-    "build": "cd client && yarn build",
+    "build": "cd client && npm run build",
     "deploy": "gcloud app deploy",
-    "dev": "nodemon app.js"
+    "dev": "concurrently \"cd client && npm run start\" \"nodemon app.js\""
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "concurrently": "^5.0.0",
     "nodemon": "^1.19.4"
   }
 }
