@@ -1,10 +1,14 @@
 var express         = require('express'),
     bodyParser      = require('body-parser'),
     cors            = require('cors'),
-    path            = require('path'),
-    user            = require('./server/user')
+    path            = require('path')
 
 const app = express();
+
+var fb = require('firebase');
+var firebaseConfig = require('./firebaseConfig');
+fb.initializeApp(firebaseConfig);
+module.exports = fb
 
 // Serve the static files from the React app
 app.use(cors())
@@ -15,7 +19,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 
 //routes
-app.use('/user', user)
+var user            = require('./server/user');
+var wishboard       = require('./server/wishboard');
+app.use('/user', user);
+app.use('/wishboard', wishboard);
+
+
+//end routes
+
 
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
