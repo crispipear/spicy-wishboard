@@ -20,7 +20,7 @@ router.post('/validate-groupId', (req, res, next) => {
         }else{
             res.status(200).send({
                 idFound: false,
-                message: `id ${reqId} does not exist`
+                message: `id ${reqId} is an invalid group id`
             })
         }
     });

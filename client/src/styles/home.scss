@@ -1,0 +1,80 @@
+.home{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    overflow: hidden;
+    .home-title, .home-login{
+        flex: 1;
+    }
+}
+
+.home-decor{
+    position: absolute;
+    bottom: -2.5%;
+    right: 5%;
+    width: 28%;
+    img{
+        width: 100%;
+    }
+}
+
+.home-title{
+    img{
+        width: 60%;
+    }
+    p{
+        font-size: 16px;
+        margin-left: 5.75%;
+        margin-top: 5%;
+        font-weight: 600;
+    }
+}
+.home-login{
+    .home-login-form{
+        display: flex;
+        flex-direction: row;
+        div{
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            .input-group{
+                width: 300px;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                label{
+                    flex: 1
+                }
+                input{
+                    flex: 1.25
+                }
+            }
+        }
+    }
+}
+
+.create-account {
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: underline;
+    &:hover{
+        opacity: 0.5;
+    }
+}
+
+.login-modal{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    width: 440px;
+    height: 240px;
+    background:rgba(255,255,255, 0.95);
+    -webkit-box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
+    -moz-box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
+    box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
+}

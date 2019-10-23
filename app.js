@@ -27,7 +27,6 @@ app.use('/wishboard', wishboard);
 
 //end routes
 
-
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
@@ -38,7 +37,6 @@ app.use((req, res, next) => {
     err.status = 404
     next(err)
 })
-
 
 const port = process.env.PORT || 3001;
 app.listen(port);
