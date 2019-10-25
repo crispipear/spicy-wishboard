@@ -3,22 +3,20 @@
     flex-direction: row;
     position: relative;
     overflow: hidden;
-    .home-title, .home-login{
-        flex: 1;
-    }
 }
 
 .home-decor{
     position: absolute;
     bottom: -2.5%;
     right: 5%;
-    width: 28%;
+    width: 27.5%;
     img{
         width: 100%;
     }
 }
 
 .home-title{
+    flex: 1;
     img{
         width: 60%;
     }
@@ -30,6 +28,7 @@
     }
 }
 .home-login{
+    flex: 1.25;
     .home-login-form{
         display: flex;
         flex-direction: row;
@@ -71,10 +70,18 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
-    width: 440px;
-    height: 240px;
+    width: 360px;
+    height: 280px;
     background:rgba(255,255,255, 0.95);
     -webkit-box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
     -moz-box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
     box-shadow: 0px 5px 15px 0px rgba(51,36,26,0.1);
+    .login-modal-buttons{
+        display: flex;
+        margin-top: 4px;
+        flex-direction: row;
+        button:first-of-type{
+            margin-right: 8px;
+        }
+    }
 }

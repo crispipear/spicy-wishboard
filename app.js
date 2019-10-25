@@ -19,8 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 
 //routes
-var user            = require('./server/user');
-var wishboard       = require('./server/wishboard');
+var user            = require('./server/routes/user');
+var wishboard       = require('./server/routes/wishboard');
 app.use('/user', user);
 app.use('/wishboard', wishboard);
 

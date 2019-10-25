@@ -27,10 +27,11 @@ section{
 }
 
 p, a, span, b{
+  margin: 8px 0px 8px 0px;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.2px;
-  color: $dark;
+  color: $text;
 }
 
 h1,h2,h3,h4{

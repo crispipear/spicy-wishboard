@@ -1,6 +1,6 @@
 var   express = require('express'),
       router = express.Router(),
-      fb = require('../app.js')
+      fb = require('../../app.js')
 
 const TAG = 'WISHBOARD_ROUTE'
 
@@ -20,7 +20,7 @@ router.post('/validate-groupId', (req, res, next) => {
         }else{
             res.status(200).send({
                 idFound: false,
-                message: `id ${reqId} is an invalid group id`
+                message: `${reqId} is an invalid group id`
             })
         }
     });

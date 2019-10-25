@@ -1,16 +1,20 @@
-var   express = require('express'),
-      router = express.Router(),
-      fb = require('../app.js')
+var   express         = require('express'),
+      router          = express.Router(),
+      fb              = require('../../app.js'),
+      authHelpers     = require('../utils/authHelpers')
 
 const TAG = 'USER_ROUTE'
 
 var userSignedIn = false;
+var userSignedInId = '';
 
 fb.auth().onAuthStateChanged(user => {
     if(user){
       userOnline = true;
+      userSignedInId = user.uid
     }else{
       userOnline = false;
+      userSignedInId = ''
     }
 })
 
@@ -22,7 +26,9 @@ router.all('*', (req, res, next) => {
 
 router.get('/', (req, res) => {
   const user = fb.auth().currentUser
-  console.log(user)
+  if(user){
+    console.log(user.uid)
+  }
   res.send('user backend test')
 })
 
@@ -38,15 +44,22 @@ router.post('/create', (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       birthday: user.birthday,
-      groups: {0: user.groupId}
+      groups: {[user.groupId]: true}
     });
+    fb.database().ref(`groups/${user.groupId}/users`).update({[response.user.uid]: true})
   }).catch(err => {
     res.status(200).send({success: false, message: err.message})
   })
 })
 
 router.post('/status', (req, res) => {
-  res.status(200).send({online: userSignedIn})
+  const user = fb.auth().currentUser
+  if(user || userSignedIn){
+    const uid  = user.uid || userSignedInId
+    res.status(200).send({online: true, uid})
+  }else{
+    res.status(200).send({online: false})
+  }
 })
 
 router.post('/signout', (req, res) => {
@@ -62,7 +75,7 @@ router.post('/login', (req, res) => {
       res.status(200).send({user, success: true})
     })
     .catch(err => {
-      res.status(200).send({success: false, message: err.message})
+      res.status(200).send({success: false, message: authHelpers[err.code]})
     })
 })
 

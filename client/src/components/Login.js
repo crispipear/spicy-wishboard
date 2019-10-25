@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { updateUser } from '../actions/action_update_user';
 import { updateUserStatus } from '../actions/action_update_user_status';
 import { post, get, API_URL } from '../services/apiUtils';
+
 import Validator from '../services/validator';
 
 import LOGO from '../assets/logo.png';
@@ -17,31 +18,46 @@ const forms = {
     create: [
         {name: 'email'},
         {name: 'username'},
+        {name: 'password', type: 'password'},
         {name: 'first name'},
         {name: 'last name'},
-        {name: 'birthday', placeholder: 'MM/DD/YYYY'},
-        {name: 'password', type: 'password'}
+        {name: 'birthday', placeholder: 'MM/DD/YYYY', dateInput: true}
     ]
 }
 
 class Login extends Component {
     state = {
         modal: false,
-        invCode: '',
+        modalCode: '',
         username: '',
         password: '',
         email: '',
         'first name': '',
         'last name': '',
         birthday: '',
-        mode: 'login'
+        mode: 'login',
+        modalMessage: {msg: 'enter group invite code', err: false},
+        formMessage: {msg: '   ', err: false},
+        prevDateLength: 0
     }
-    handleChange = event => {
+    handleChange = (event, dateInput = false) => {
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({
-            [name]: value
-        })
+        if(dateInput){
+            let strLength = value.length;
+            let thisVal = value;
+            if(value.length > this.state.prevDateLength && (strLength === 2 || strLength === 5)){
+                thisVal += '/';
+            }
+            this.setState({
+                [name]: thisVal,
+                prevDateLength: strLength
+            })
+        }else{
+            this.setState({
+                [name]: value
+            })
+        }
     } 
 
     onSubmit = () => {
@@ -56,35 +72,49 @@ class Login extends Component {
                 firstName: this.state['first name'],
                 lastName: this.state['last name'],
                 email: this.state.email,
-                groupId: this.state.invCode
+                groupId: this.state.modalCode
             }
             const validation = this.validateData(data)
             if(validation.success){
+                this.setState({
+                    formMessage: {msg: 'creating your new account, please wait...', err: false}
+                })
                 post(API_URL(endPoint), data)
                 .then(res => {
                     if(res.data.success){
-                        window.alert('account created!')
                         this.reset()
                     }else{
-                        window.alert(res.data.message)
+                        this.setState({
+                            formMessage: {msg: res.data.message, err: true}
+                        })
                     }
                 })
             }else{
-                window.alert(validation.message)
+                this.setState({
+                    formMessage: {msg: validation.message, err: true}
+                })
             }
         }else if (this.state.mode == 'login'){
             data = {
                 email: this.state.email,
                 password: this.state.password
             }
-            post(API_URL(endPoint), data)
-            .then(res => {
-                if(res.data.success){
-                    this.getUserData(res.data.user.user.uid)
-                }else{
-                    window.alert(res.data.message)
-                }
-            })
+            if(Validator.validateEmail(data.email)){
+                post(API_URL(endPoint), data)
+                .then(res => {
+                    if(res.data.success){
+                        this.getUserData(res.data.user.user.uid)
+                    }else{
+                        this.setState({
+                            formMessage: {msg: res.data.message, err: true}
+                        })
+                    }
+                })
+            }else{
+                this.setState({
+                    formMessage: {msg: 'Please enter a valid email.', err: true}
+                })
+            }
         }
     }
 
@@ -94,42 +124,49 @@ class Login extends Component {
             if(res.data.success){
                 this.props.updateUser({...res.data.user, uid})
                 this.reset()
-                window.alert('account signed in!')
                 this.props.updateUserStatus(true)
                 this.props.history.push('/dashboard')
             }else{
-                window.alert(res.data.message)
+                this.setState({
+                    formMessage: {msg: res.data.message, err: true}
+                })
             }
         })
     }
 
     validateGroupId = () => {
-        if(this.state.invCode.length < 1 || !this.state.invCode){
-            window.alert('You must enter a group id!')
+        if(this.state.modalCode.length < 1 || !this.state.modalCode){
+            this.setState({modalMessage: {msg: 'you must enter a valid group Id!', err: true}})
         }else{
-            post(API_URL('/wishboard/validate-groupId'), {reqId: this.state.invCode})
+            this.setState({modalMessage: {msg: 'validating group id, please wait...', err: false}})
+            post(API_URL('/wishboard/validate-groupId'), {reqId: this.state.modalCode})
             .then(res => {
                 if(res.data.idFound){
-                    this.setState({mode: 'create'})
+                    this.setState({modal: false}) 
+                    this.setState({mode: 'create', formMessage: {msg: '', err: false}})
                 }else{
-                    window.alert(res.data.message)
+                    this.setState({modalMessage: {msg: res.data.message, err: true}})
                 }
             })
         }   
-        this.setState({modal: false}) 
     }
 
     validateData = data => {
         let success = true;
         let message = '';
-        for (let field in data){
-            if(Validator.isEmpty(data[field])){
-                success = false;
-                message = 'please fill out all fields';
-                return {success, message}
+        let fieldsLength = Object.keys(data).length
+        let curIndex = 0
+        while(curIndex !== fieldsLength){
+            for (let field in data){
+                if(Validator.isEmpty(data[field])){
+                    success = false;
+                    message = 'please fill out all fields';
+                    return {success, message}
+                }
+                curIndex++
             }
-            break;
         }
+
         if(!Validator.validateEmail(data.email)){
             success = false
             message = 'please enter a valid email'
@@ -144,15 +181,32 @@ class Login extends Component {
     reset = () => {
         this.setState({
             modal: false,
-            invCode: '',
+            modalCode: '',
             username: '',
             password: '',
             email: '',
             'first name': '',
             'last name': '',
             birthday: '',
-            mode: 'login'
+            mode: 'login',
+            modalMessage: {msg: 'enter group invite code', err: false},
+            formMessage: {msg: '   ', err: false},
+            prevDateLength: 0
         })
+    }
+
+    componentDidMount(){
+        post(API_URL('/user/status'))
+        .then(res => {
+          if(res.data){
+            this.props.updateUserStatus(res.data.online)
+            if(res.data.online){
+              this.getUserData(res.data.uid)
+              this.props.history.push('/dashboard')          
+            }
+          }
+        }
+      )
     }
 
     render() {
@@ -162,9 +216,15 @@ class Login extends Component {
                 {
                     this.state.modal &&
                     <div className='login-modal'>
-                        <p>enter group invite code</p>
-                        <input name='invCode' value={this.state.invCode} onChange={this.handleChange}/>
-                        <button style={{marginTop: 16}} onClick={this.validateGroupId}>submit</button>
+                        <h2>Join with Group Id</h2>
+                        <input name='modalCode' value={this.state.modalCode} onChange={this.handleChange}/>
+                        <p className='login-modal-message'
+                           style={{color: this.state.modalMessage.err ? '#bf2932' : '#504d4d'}}
+                        >{this.state.modalMessage.msg}</p>
+                        <div className='login-modal-buttons'>
+                            <button onClick={() => this.setState({modal: false, modalCode: ''})}>cancel</button>
+                            <button onClick={this.validateGroupId}>submit</button>
+                        </div>
                     </div>
                 }
                 <div className='home-title'>
@@ -182,10 +242,12 @@ class Login extends Component {
                                         name={item.name}
                                         value={this.state[item.name]} 
                                         placeholder={item.placeholder || ''}
-                                        onChange={this.handleChange}/>
+                                        onChange={evt => item.dateInput ? this.handleChange(evt, item.dateInput): this.handleChange(evt)}
+                                    />
                                 </div>
                                 )
                             }
+                            <p style={{color: this.state.formMessage.err ? '#bf2932' : '#504d4d'}}>{this.state.formMessage.msg}</p>
                         </div>
                         <div>
                             <button onClick={this.onSubmit}>{this.state.mode}</button>
