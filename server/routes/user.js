@@ -56,9 +56,9 @@ router.post('/status', (req, res) => {
   const user = fb.auth().currentUser
   if(user || userSignedIn){
     const uid  = user.uid || userSignedInId
-    res.status(200).send({online: true, uid})
+    res.status(200).send({signedIn: true, uid})
   }else{
-    res.status(200).send({online: false})
+    res.status(200).send({signedIn: false})
   }
 })
 

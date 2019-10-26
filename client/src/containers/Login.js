@@ -8,7 +8,7 @@ import { post, get, API_URL } from '../services/apiUtils';
 import Validator from '../services/validator';
 
 import LOGO from '../assets/logo.png';
-import HomeDecor from './HomeDecor';
+import HomeDecor from '../components/HomeDecor';
 
 const forms = {
     login: [
@@ -77,7 +77,7 @@ class Login extends Component {
             const validation = this.validateData(data)
             if(validation.success){
                 this.setState({
-                    formMessage: {msg: 'creating your new account, please wait...', err: false}
+                    formMessage: {msg: 'creating your new account...', err: false}
                 })
                 post(API_URL(endPoint), data)
                 .then(res => {
@@ -100,6 +100,9 @@ class Login extends Component {
                 password: this.state.password
             }
             if(Validator.validateEmail(data.email)){
+                this.setState({
+                    formMessage: {msg: 'loggin in...', err: false}
+                })
                 post(API_URL(endPoint), data)
                 .then(res => {
                     if(res.data.success){
@@ -138,7 +141,7 @@ class Login extends Component {
         if(this.state.modalCode.length < 1 || !this.state.modalCode){
             this.setState({modalMessage: {msg: 'you must enter a valid group Id!', err: true}})
         }else{
-            this.setState({modalMessage: {msg: 'validating group id, please wait...', err: false}})
+            this.setState({modalMessage: {msg: 'validating group id...', err: false}})
             post(API_URL('/wishboard/validate-groupId'), {reqId: this.state.modalCode})
             .then(res => {
                 if(res.data.idFound){
@@ -199,10 +202,9 @@ class Login extends Component {
         post(API_URL('/user/status'))
         .then(res => {
           if(res.data){
-            this.props.updateUserStatus(res.data.online)
-            if(res.data.online){
+            this.props.updateUserStatus(res.data.signedIn)
+            if(res.data.signedIn){
               this.getUserData(res.data.uid)
-              this.props.history.push('/dashboard')          
             }
           }
         }

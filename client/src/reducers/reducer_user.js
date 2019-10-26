@@ -5,7 +5,7 @@ const initState = {
     username: '',
     email: '',
     uid: '',
-    online: false
+    signedIn: false
 }
 
 export default function(state=initState, action){
@@ -13,7 +13,7 @@ export default function(state=initState, action){
         case UPDATE_USER:
             return {...state, ...action.payload}
         case UPDATE_USER_STATUS:
-            return {...state, online: action.payload}
+            return {...state, signedIn: action.payload}
         default:
             return state
     }

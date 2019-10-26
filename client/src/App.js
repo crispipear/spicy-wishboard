@@ -3,8 +3,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
-import Login            from './components/Login';
-import Dashboard        from './components/Dashboard';
+import Menu             from './components/Menu';
+import Login            from './containers/Login';
+import Dashboard        from './containers/Dashboard';
+import Wishlist         from './containers/Wishlist';
+import Group            from './containers/Group';
+import Friend           from './containers/Friend';
+
 import './styles/app.scss';
 
 const routes = [
@@ -17,6 +22,21 @@ const routes = [
     path: "/dashboard",
     main: Dashboard,
     protected: true
+  },
+  {
+    path: "/wishlist",
+    main: Wishlist,
+    protected: true
+  },
+  {
+    path: "/group",
+    main: Group,
+    protected: true
+  },
+  {
+    path: "/friend",
+    main: Friend,
+    protected: true
   }
 ]
 
@@ -26,11 +46,14 @@ class App extends Component{
   render(){
     return (
       <Router>
+          {
+            this.props.signedIn && <Menu/>
+          }
           <Switch>
               {routes.map((route, index) => (
                 route.protected ?
                 <ProtectedRoute
-                  allowed={this.props.online}
+                  allowed={this.props.signedIn}
                   exact
                   key={index}
                   path={route.path}
@@ -50,14 +73,13 @@ class App extends Component{
   }
 }
 
-
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
   }, dispatch)
 }
 const mapStateToProps = state => ({
   siteTitle: state.main.siteTitle,
-  online: state.user.online
+  signedIn: state.user.signedIn
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

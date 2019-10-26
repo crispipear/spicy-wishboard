@@ -11,12 +11,16 @@ class Dashboard extends Component {
         this.props.history.push('/')
     }
 
+    componentDidMount(){
+        console.log(this.props.user)
+    }
+
     render() {
         return (
             <section className="dashboard">
-                <p>Welcome! {this.props.user.username}</p>
+                <p>Welcome! {this.props.user.firstName}</p>
+                <p>Birthday: {this.props.user.birthday}</p>
                 <button onClick={this.signOut}>sign out</button>
-                <p>online: {this.props.online ? 'true' : 'false'}</p>
             </section>
         );
     }
@@ -26,6 +30,6 @@ function mapDispatchToProps(dispatch) {
 }
 const mapStateToProps = state => ({
     user: state.user,
-    online: state.user.online
+    signedIn: state.user.signedIn
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
