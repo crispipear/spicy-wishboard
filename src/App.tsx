@@ -1,11 +1,11 @@
 import React from 'react';
-import LOGO from './assets/logo.png';
+import LandingPage from '@/components/LandingPage';
 // import { getFirebaseData } from './services/auth';
 
 function App(): React.ReactElement {
   return (
     <div className="App">
-      <img src={LOGO} alt="site logo" />
+      <LandingPage />
       {/* <pre>{getFirebaseData()}</pre> */}
     </div>
   );
